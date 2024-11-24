@@ -1,11 +1,15 @@
 package main
 
-import "github.com/e-commerce-api/database"
+import (
+	"github.com/e-commerce-api/config"
+	"github.com/e-commerce-api/router"
+)
 
 func init() {
-	database.InitiliazeConfig()
-	database.InitDB()
+	config.InitiliazeConfig()
+	config.InitDB()
+	config.SyncDB()
 }
 func main() {
-
+	router.Server().Run()
 }
