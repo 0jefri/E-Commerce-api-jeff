@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/e-commerce-api/api/product"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -23,6 +24,7 @@ func NewWishlistRepository(db *gorm.DB) WishlistRepository {
 
 func (r *wishlistRepository) AddToWishlist(userID string, productID string) error {
 	wishlistItem := Wishlist{
+		ID:        uuid.NewString(),
 		UserID:    userID,
 		ProductID: productID,
 		CreatedAt: time.Now(),

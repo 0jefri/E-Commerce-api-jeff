@@ -16,6 +16,7 @@ func NewWishlistHandler(service WishlistService) *WishlistHandler {
 }
 
 func (h *WishlistHandler) AddToWishlist(c *gin.Context) {
+	// var wishlist Wishlist
 	var request struct {
 		ProductID string `json:"product_id"`
 	}
@@ -30,6 +31,8 @@ func (h *WishlistHandler) AddToWishlist(c *gin.Context) {
 		return
 	}
 
+	// wishlist.ID = uuid.NewString()
+	// request.ProductID = uuid.NewString()
 	err := h.service.AddProductToWishlist(userID.(string), request.ProductID)
 	if err != nil {
 		fmt.Println("error:", err)
