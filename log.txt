@@ -196,3 +196,4 @@ time="2024-11-24T23:57:32+07:00" level=info msg="{2024-11-24 23:57:32.384430013 
 time="2024-11-24T23:57:37+07:00" level=info msg="{2024-11-24 23:57:37.074825003 +0700 WIB m=+7.776478750 610ns 200 ::1 GET /api/v1/e-commerce/Home-page/wishlist-list PostmanRuntime/7.29.4}"
 time="2024-11-24T23:58:15+07:00" level=info msg="{2024-11-24 23:58:15.214882794 +0700 WIB m=+22.650477015 287ns 200 ::1 POST /api/v1/e-commerce/Home-page/wishlist PostmanRuntime/7.29.4}"
 time="2024-11-24T23:58:18+07:00" level=info msg="{2024-11-24 23:58:18.997401136 +0700 WIB m=+26.432995338 251ns 200 ::1 GET /api/v1/e-commerce/Home-page/wishlist-list PostmanRuntime/7.29.4}"
+time="2024-11-25T00:03:47+07:00" level=info msg="{2024-11-25 00:03:47.720310421 +0700 WIB m=+7.060285764 283ns 200 ::1 GET /api/v1/e-commerce/Home-page/wishlist-list PostmanRuntime/7.29.4}"
