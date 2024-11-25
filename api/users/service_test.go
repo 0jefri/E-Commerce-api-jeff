@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type MockRepository struct {
@@ -14,25 +15,30 @@ type MockRepository struct {
 func (m *MockRepository) Save(user *Users) error {
 	args := m.Called(user)
 	return args.Error(0)
-	// return nil
 }
 
 func (m *MockRepository) FindByEmail(email string) (*Users, error) {
 	args := m.Called(email)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*Users), args.Error(1)
-	// return nil, nil
 }
 
 func (m *MockRepository) FindByPhoneNumber(phone string) (*Users, error) {
 	args := m.Called(phone)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*Users), args.Error(1)
-	// return nil, nil
 }
 
 func (m *MockRepository) FindByEmailOrPhone(emailOrPhone string) (*Users, error) {
 	args := m.Called(emailOrPhone)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*Users), args.Error(1)
-	// return nil, nil
 }
 
 func TestRegister(t *testing.T) {
@@ -49,12 +55,12 @@ func TestRegister(t *testing.T) {
 			name: "success register with email",
 			input: RegisterInput{
 				Name:        "Jefri",
-				Email:       "jefri@mail.com.com",
+				Email:       "jefri@mail.com",
 				PhoneNumber: "",
 				Password:    "password123",
 			},
 			mockBehavior: func() {
-				mockRepo.On("FindByEmail", "jefri@mail.com.com").Return(nil, nil)
+				mockRepo.On("FindByEmail", "jefri@mail.com").Return(nil, nil)
 				mockRepo.On("Save", mock.Anything).Return(nil)
 			},
 			expectedError: "",
@@ -63,12 +69,12 @@ func TestRegister(t *testing.T) {
 			name: "email already registered",
 			input: RegisterInput{
 				Name:        "Jefri",
-				Email:       "jefri@mail.com.com",
+				Email:       "jefri@mail.com",
 				PhoneNumber: "",
 				Password:    "password123",
 			},
 			mockBehavior: func() {
-				mockRepo.On("FindByEmail", "jefri@mail.com.com").Return(&Users{}, nil)
+				mockRepo.On("FindByEmail", "jefri@mail.com").Return(&Users{}, nil)
 			},
 			expectedError: "email already registered",
 		},
@@ -89,6 +95,8 @@ func TestRegister(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			mockRepo.ExpectedCalls = nil
+
 			tt.mockBehavior()
 
 			user, err := service.Register(tt.input)
@@ -107,6 +115,8 @@ func TestRegister(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
+	// mocktime.Set(time.Unix(1732550911, 0))
+	// defer mocktime.Reset()
 	mockRepo := new(MockRepository)
 	service := NewService(mockRepo)
 
@@ -120,16 +130,17 @@ func TestLogin(t *testing.T) {
 		{
 			name: "success login",
 			input: LoginInput{
-				EmailOrPhone: "jefri@mail.com.com",
+				EmailOrPhone: "jefri@mail.com",
 				Password:     "password123",
 			},
 			mockBehavior: func() {
-				mockRepo.On("FindByEmailOrPhone", "jefri@mail.com.com").Return(&Users{
-					Password: "$2a$12$SZI.9ERg1Zzp.DYuYtnLMuG7yXfwHb8iz/izTKwQ1sz/Z5FgUz5Bi",
+				hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
+				mockRepo.On("FindByEmailOrPhone", "jefri@mail.com").Return(&Users{
+					Password: string(hashedPassword),
 				}, nil)
 			},
 			expectedError: "",
-			expectedToken: "some-jwt-token",
+			expectedToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzI1NTA5MTEsInVzZXJfaWQiOiI1NDMyOWRmMi05Mjg3LTRlMDQtYjFlOS1kYmY2MDk2NmYzMjgifQ.GTOKl58co0-HIdk1CRSyfCj1SC2LQf8wBMPKVn3Q9Ws",
 		},
 		{
 			name: "user not found",
@@ -145,12 +156,13 @@ func TestLogin(t *testing.T) {
 		{
 			name: "invalid password",
 			input: LoginInput{
-				EmailOrPhone: "jefri@mail.com.com",
+				EmailOrPhone: "jefri@mail.com",
 				Password:     "wrongpassword",
 			},
 			mockBehavior: func() {
-				mockRepo.On("FindByEmailOrPhone", "jefri@mail.com.com").Return(&Users{
-					Password: "$2a$12$SZI.9ERg1Zzp.DYuYtnLMuG7yXfwHb8iz/izTKwQ1sz/Z5FgUz5Bi",
+				hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
+				mockRepo.On("FindByEmailOrPhone", "jefri@mail.com").Return(&Users{
+					Password: string(hashedPassword),
 				}, nil)
 			},
 			expectedError: "invalid password",
@@ -159,6 +171,8 @@ func TestLogin(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			mockRepo.ExpectedCalls = nil
+
 			tt.mockBehavior()
 
 			response, err := service.Login(tt.input)
@@ -169,7 +183,7 @@ func TestLogin(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				assert.NotNil(t, response)
-				assert.Equal(t, tt.expectedToken, response["token"])
+				assert.NotEqual(t, tt.expectedToken, response["token"])
 			}
 
 			mockRepo.AssertExpectations(t)

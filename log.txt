@@ -197,3 +197,5 @@ time="2024-11-24T23:57:37+07:00" level=info msg="{2024-11-24 23:57:37.074825003 
 time="2024-11-24T23:58:15+07:00" level=info msg="{2024-11-24 23:58:15.214882794 +0700 WIB m=+22.650477015 287ns 200 ::1 POST /api/v1/e-commerce/Home-page/wishlist PostmanRuntime/7.29.4}"
 time="2024-11-24T23:58:18+07:00" level=info msg="{2024-11-24 23:58:18.997401136 +0700 WIB m=+26.432995338 251ns 200 ::1 GET /api/v1/e-commerce/Home-page/wishlist-list PostmanRuntime/7.29.4}"
 time="2024-11-25T00:03:47+07:00" level=info msg="{2024-11-25 00:03:47.720310421 +0700 WIB m=+7.060285764 283ns 200 ::1 GET /api/v1/e-commerce/Home-page/wishlist-list PostmanRuntime/7.29.4}"
+time="2024-11-25T22:16:14+07:00" level=warning msg="{2024-11-25 22:16:14.929901669 +0700 WIB m=+5.567255386 283ns 404 ::1 GET /api/v1/e-commerce/auth/login Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36}"
+time="2024-11-25T22:16:15+07:00" level=warning msg="{2024-11-25 22:16:15.599989277 +0700 WIB m=+6.237343008 309ns 404 ::1 GET /favicon.ico Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36}"
